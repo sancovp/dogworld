@@ -227,6 +227,41 @@ autocatalytic-set theory (Kauffman RAF / Eigen) = **G5** (faithful, promotable b
 done: the owl→dog→master chain forms a RAF and collapses when starved); "good = emergence = life
 = negentropy" = **G6** (dissipative-structures resonance, not a derivation).
 
+## 6c. Places & the world chart — the LIVE heaven-agent overlay (✅ BUILT)
+
+Dirs are **places**. Agents **move** between them; **proximity gates the warrant**; capability is
+location-dependent.
+
+- A place = a directory with a `place.md` listing **affordances** (what you can attempt here) and
+  **exits** (where you can go = Read-breadcrumbs to neighbor dirs). `dogworld/places.py: PlaceWorld`
+  loads the dir-tree into the chart.
+- **capability(agent, now) = intrinsic tools (the manifest) ∪ place affordances ∪ co-located
+  agents' shared skills.** Tools = what you *are*; place skills = what the *place* offers; shares =
+  what *being near another agent* lends (the owl lends `see` to whoever is in the forest).
+- **Proximity gates the warrant.** A belief's warrant can only exist where its cause is. The owl
+  hoots in `forest`; the dog's `bark` requires `owl_hooted_at({place})@{t}` — so barking in the
+  `yard` (no owl) is **unwarranted → WISDOM−1**, while barking in the `forest` is warranted. A live
+  agent must **navigate to where its belief can be true.**
+- **The mechanism.** On heaven, an agent Read()-ing into a place dir autoloads its `.claude`
+  loadout natively. On the host we replicate it: the engine reads the place chart and injects it
+  into the live LLM call (same semantics, host-runnable, no heaven needed).
+- **Regularization tie (§ above):** a raw place is a *hyperstructure* (a loose bundle of "what's
+  here"); `place.md` + the chart **regularize** it into the typed affordances/exits the gate runs
+  over.
+
+```
+world/                         dog (live MiniMax) reads its chart each tick → bark | sniff | move
+  forest/place.md  (owl here)  bark in forest where owl hooted → WOOF + near() + catalysis
+  yard/place.md    (no owl)    bark in yard → WISDOM −1 (navigate away to be valid)
+```
+
+**Verified LIVE** (`examples/live_places.py`, real MiniMax): the dog reasoned *"No owl here,
+barking would cost wisdom. Forest is where owls roost,"* **moved itself to the forest**, then
+barked validly — WISDOM held at 10, `near(dog,owl)` closed. The offline core is unchanged (the
+place-world is the LLM-agent overlay; `MockArbiter` tests stay stdlib). ASPIRATIONAL: native
+heaven `.claude` autoload traversal; graph (not tree) place topology; a live *multi-agent*
+skill-share run (owl lends `see`, dog confirms visually before barking).
+
 ## 7. Module plan (what gets built)
 
 | module | responsibility | status |
@@ -239,6 +274,7 @@ done: the owl→dog→master chain forms a RAF and collapses when starved); "goo
 | `dogworld/gate.py` | the `⊨`: warrant+consistency → act-or-penalize(B, WISDOM−1, re-narrate); records catalysis edges | BUILD |
 | `dogworld/catalysis.py` | the calculable "good": `cat(f)`, `fitness(agent)`, `max_raf` (emergence detection) | ✅ BUILT |
 | `dogworld/sdt.py` | the informative-percept channel: `Channel`(d′), `Detector`(τ), `recovered_dprime`, `optimal_threshold` — makes calibration possible | ✅ BUILT |
+| `dogworld/places.py` | the world chart: `PlaceWorld` over a dir-tree (places, exits, move, proximity, capability, shares) | ✅ BUILT (live-verified) |
 | `dogworld/arbiter.py` | `Arbiter` protocol; `MockArbiter` (deterministic/seeded); `LLMArbiter` (REAL — live MiniMax via `dogworld/llm.py`) | ✅ BUILT |
 | `dogworld/llm.py` | the model transport: MiniMax via anthropic SDK + `MINIMAX_API_KEY` (bare path; host-runnable) | ✅ BUILT |
 | `dogworld/seams/cave_runtime.py` | **Dogworld running ON cave-teams**: `gate(DecisionLink, WarrantGate)` — LLM decision = body, world-warrant+WISDOM = φ | ✅ BUILT + LIVE-VERIFIED |
@@ -252,7 +288,7 @@ done: the owl→dog→master chain forms a RAF and collapses when starved); "goo
 | `tests/` | world, gate (absence+contradiction), rng, agent-reflection, engine cascade, calibration | ✅ BUILT — 17/17 pass |
 
 ### STATUS (built 2026-06-28; then LLM+cave wired live)
-All core modules + examples + seams + tests BUILT and VERIFIED. `python3 tests/run_all.py` → **32 passed, 0 failed** (offline, no API, no external DB). **Signal-detection calibration (`sdt.py`) BUILT** — interior optimum matches SDT theory, `d′` recovered, blind percept proven uncalibratable. **Catalysis/emergence (§6b) BUILT** (`catalysis.py` + `examples/catalysis_demo.py`): the owl→dog→master chain forms a RAF (fitness owl=2 > dog=1 > master=0, the owl is the catalytic root) and the RAF collapses when starved of food. Offline cascade/bench: WISDOM 10→7, bark calibration 0.70; realized hoot-freq tracks injected P; WISDOM-loss falls as the world gets owl-richer.
+All core modules + examples + seams + tests BUILT and VERIFIED. `python3 tests/run_all.py` → **36 passed, 0 failed** (offline, no API, no external DB). **Live place-world (§6c) BUILT + VERIFIED LIVE** — a real MiniMax dog navigated dir-places (forest/yard) to where its bark is warranted; it reasoned about WISDOM, moved to the forest, barked validly (WISDOM held at 10). **Signal-detection calibration (`sdt.py`) BUILT** — interior optimum matches SDT theory, `d′` recovered, blind percept proven uncalibratable. **Catalysis/emergence (§6b) BUILT** (`catalysis.py` + `examples/catalysis_demo.py`): the owl→dog→master chain forms a RAF (fitness owl=2 > dog=1 > master=0, the owl is the catalytic root) and the RAF collapses when starved of food. Offline cascade/bench: WISDOM 10→7, bark calibration 0.70; realized hoot-freq tracks injected P; WISDOM-loss falls as the world gets owl-richer.
 
 **LIVE (real LLM + cave-teams), `examples/live_owl_dog_cave.py` (set MINIMAX_API_KEY first):** a real **MiniMax** arbiter, orchestrated by **cave-teams' `gate(DecisionLink, WarrantGate)`** (the LLM decision is the `body` Link; the world-warrant + WISDOM check is the `φ` Link). Verified run:
 ```

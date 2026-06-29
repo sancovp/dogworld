@@ -49,6 +49,17 @@ class PlaceWorld:
             p = _parse_place(md)
             self.places[p.name] = p
         self.location: dict[str, str] = {}     # agent_name -> place_name
+        self.shares: dict[str, list[str]] = {}  # agent -> skills it LENDS to co-located agents
+
+    def register_share(self, agent: str, skills: list[str]) -> None:
+        """Skills this agent makes available to anyone PROXIMATE to it (the owl lends `see`)."""
+        self.shares[agent] = list(skills)
+
+    def shared_with(self, agent: str) -> dict[str, list[str]]:
+        """{co-located agent -> skills it lends here} — capability gained by being near others."""
+        place = self.location.get(agent)
+        return {a: self.shares[a] for a in self.occupants(place, exclude=agent)
+                if self.shares.get(a)}
 
     def spawn(self, agent: str, at: str) -> None:
         self.location[agent] = at
@@ -73,9 +84,19 @@ class PlaceWorld:
         """The place loadout injected into the agent's context (its 'where am I' view)."""
         p = self.here(agent)
         others = self.occupants(p.name, exclude=agent)
+        lent = self.shared_with(agent)
+        lent_str = "; ".join(f"{a} lends: {', '.join(sk)}" for a, sk in lent.items()) or "(none)"
         return (
             f"You are at: {p.name} ({p.desc}).\n"
             f"Here you can attempt: {', '.join(p.affords) or '(nothing)'}.\n"
+            f"Skills lent to you by those nearby: {lent_str}.\n"
             f"Exits — you may move to: {', '.join(p.exits) or '(none)'}.\n"
             f"Others here with you: {', '.join(others) or '(no one)'}."
         )
+
+    def capability(self, agent: str, intrinsic: list[str]) -> set[str]:
+        """The full action-set available to `agent` NOW = intrinsic ∪ place affords ∪ co-located shares."""
+        cap = set(intrinsic) | set(self.here(agent).affords)
+        for sk in self.shared_with(agent).values():
+            cap |= set(sk)
+        return cap
