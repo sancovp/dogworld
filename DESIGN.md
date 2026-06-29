@@ -287,8 +287,17 @@ The SOP-extrusion pattern: bracket an event flow, extrude a parameterized proced
 So learning closes the loop with the rest of the engine: the gate that adjudicates a single belief
 also decides what can be *remembered as a procedure*, and the same gate re-validates it on reuse.
 VERIFIED (`examples/sop_demo.py`, `tests/test_sop.py`): 4 recorded → 3 kept (slop dropped); replay ok
-when warrants hold, stale at the exact step when the world changed. ASPIRATIONAL: auto-bracket flows
-from a live run (no manual start/end); promote a hot SOP into a skilltree node (a reusable skill).
+when warrants hold, stale at the exact step when the world changed.
+
+**Auto-bracketing + the skilltree-RAG bridge — ✅ BUILT & LIVE-verified.** `FlowRecorder.observe(step,
+success=…)` needs no manual `sop_start`/`sop_end`: it records steps and, on a warranted success,
+auto-extrudes the buffered route and resets (the START is the previous reset; the END is the success).
+`promote_to_skill(sop, dir)` writes the learned route as a `SKILL.md` node — so **skilltree's FTS5/BM25
+RAG** (`search`, coordinate-scoped, glyph-faceted; lexical by design, dense/RRF a documented later
+upgrade) can index and retrieve it. The full loop ran live (`examples/live_skillshare.py`): the MiniMax
+watchdog confirmed-then-barked, the route **auto-learned** into the SOP `Confirm-then-bark`, and was
+**promoted to a skilltree node**. So: act → warranted success → auto-extrude → promote → RAG-retrievable.
+ASPIRATIONAL: `run_count`/fitness-driven promotion thresholds; replay a retrieved SOP as a macro-action.
 
 ## 7. Module plan (what gets built)
 

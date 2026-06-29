@@ -133,3 +133,45 @@ class SOPStore:
                 scored.append((score, sop.fitness, sop))
         scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
         return [s for _, _, s in scored]
+
+
+@dataclass
+class FlowRecorder:
+    """Auto-bracketing — no manual sop_start/sop_end. Record steps as the agent acts; on a SUCCESS
+    the warranted prefix auto-extrudes into a SOP and the buffer resets. The START of a flow is the
+    previous reset; the END is auto-detected by the success of the run."""
+    buffer: list[FlowStep] = field(default_factory=list)
+    learned: list[SOP] = field(default_factory=list)
+
+    def observe(self, step: FlowStep, *, success: bool = False, name: str = "", domain: str = "",
+                **extrude_kw) -> "SOP | None":
+        """Record `step`. If `success`, extrude the buffered warranted route as a SOP and reset."""
+        self.buffer.append(step)
+        if not success:
+            return None
+        sop = extrude(name or "learned-route", domain or "General", list(self.buffer), **extrude_kw)
+        self.buffer.clear()
+        if sop.steps:                    # only learn a route that had at least one warranted step
+            self.learned.append(sop)
+            return sop
+        return None
+
+
+def promote_to_skill(sop: SOP, skills_dir) -> Path:
+    """Promote a learned SOP into a SKILL.md node so skilltree's FTS5/BM25 RAG can index + retrieve
+    it (`pip install agent-skilltree`; then `skilltree search <skills_dir> "<query>"`). This is the
+    bridge from the SOP store (procedures) to the skilltree (the navigable, searchable skill corpus):
+    a hot warranted route becomes a reusable skill."""
+    d = Path(skills_dir) / sop.slug
+    d.mkdir(parents=True, exist_ok=True)
+    steps = "\n".join(f"{s.order}. {s.agent}: {s.action}" + (f"  (warrant: {s.warrant})" if s.warrant else "")
+                      for s in sop.steps)
+    desc = (f"A learned, gate-warranted route in {sop.domain}/{sop.subdomain}: "
+            f"{', '.join(s.action for s in sop.steps)}.")
+    md = (f"---\nname: {sop.slug}\ndescription: {desc}\n---\n\n"
+          f"# {sop.name}\n\nLearned procedure (fitness {sop.fitness}; every step gate-warranted). "
+          f"Inputs: {', '.join(sop.input_signature) or '(none)'}. Tags: {', '.join(sop.tags) or '(none)'}.\n\n"
+          f"## Steps\n{steps}\n")
+    p = d / "SKILL.md"
+    p.write_text(md)
+    return p
