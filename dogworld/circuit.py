@@ -18,7 +18,7 @@ stdlib-only; circuits are the optional, composable layer.
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 try:
     from uco import Link, Chain, LinkResult, LinkStatus
@@ -27,7 +27,7 @@ except Exception:                       # pragma: no cover
     HAVE_UCO = False
     Link = object                       # type: ignore
 
-from .sop import SOP, Step
+from .sop import SOP, Step, _slug
 from .world import World
 
 
@@ -70,6 +70,7 @@ class Circuit:
     inputs: set
     outputs: set
     sop: SOP | None = None
+    steps: list = field(default_factory=list)   # the FLATTENED leaf steps (so composites infer terminals)
 
     def conduct(self, world: World):
         """Run the circuit against the world (UCO LinkResult: SUCCESS, or BLOCKED-at-junction)."""
@@ -90,7 +91,57 @@ def lift(sop: SOP) -> Circuit:
         raise RuntimeError("circuits need universal-chain-ontology: pip install dogworld[circuits]")
     chain = Chain(sop.slug, [GatedStep(s) for s in sop.steps])
     inputs, outputs = _terminals(sop.steps)
-    return Circuit(sop.name, chain, inputs, outputs, sop)
+    return Circuit(sop.name, chain, inputs, outputs, sop, steps=list(sop.steps))
+
+
+def compose(name: str, parts: list, *, sop: SOP | None = None) -> Circuit:
+    """Build a hierarchical Circuit from `parts` (each a Circuit OR a Step). Because a UCO Chain IS
+    a Link, a sub-Circuit's chain embeds directly as a link in the parent — Circuit-of-Circuits.
+    Terminals are inferred over the FLATTENED leaf steps; conduction composes (the shared `world`
+    threads sub-products to later steps), and UCO short-circuits a BLOCKED junction at any depth."""
+    if not HAVE_UCO:
+        raise RuntimeError("circuits need universal-chain-ontology: pip install dogworld[circuits]")
+    links, leaves = [], []
+    for p in parts:
+        if isinstance(p, Circuit):
+            links.append(p.chain); leaves.extend(p.steps)
+        elif isinstance(p, Step):
+            links.append(GatedStep(p)); leaves.append(p)
+        else:
+            raise TypeError(f"compose parts must be Circuit or Step, got {type(p).__name__}")
+    chain = Chain(_slug(name), links)
+    inputs, outputs = _terminals(leaves)
+    return Circuit(name, chain, inputs, outputs, sop, steps=leaves)
+
+
+def _find_sub(seq: list, sub: list) -> "int | None":
+    n, m = len(seq), len(sub)
+    for i in range(n - m + 1):
+        if seq[i:i + m] == sub:
+            return i
+    return None
+
+
+def refactor_by_motif(sops: list[SOP], *, min_len: int = 2):
+    """Lift the top recurring motif into ONE shared sub-circuit, and rebuild each SOP that contains
+    it as a composite that REFERENCES the sub-circuit (instead of inlining the steps). The motifs
+    become shared sub-circuits — the hierarchy forms. Returns (sub_circuit, [rebuilt Circuits])."""
+    motifs = detect(sops, min_len=min_len)
+    if not motifs:
+        return None, [lift(s) for s in sops]
+    motif = motifs[0]
+    msig = [(s.agent, s.action, s.warrant) for s in motif]
+    sub = compose("sub:" + "-".join(s.action for s in motif), list(motif))
+    rebuilt = []
+    for sop in sops:
+        seq = [(s.agent, s.action, s.warrant) for s in sop.steps]
+        i = _find_sub(seq, msig)
+        if i is None:
+            rebuilt.append(lift(sop))
+        else:
+            parts = list(sop.steps[:i]) + [sub] + list(sop.steps[i + len(motif):])
+            rebuilt.append(compose(sop.name, parts, sop=sop))
+    return sub, rebuilt
 
 
 def detect(sops: list[SOP], *, min_len: int = 2) -> list[list[Step]]:

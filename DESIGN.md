@@ -315,6 +315,15 @@ A SOP is a *recorded route*; a **Circuit** is that route **lifted into a reusabl
   runs on circuits the engine lifted from its own (and others') behavior. *Self-hosting: the operator
   runs what the system designed.*
 
+**Hierarchical composition** (`compose`, `refactor_by_motif`): a Circuit nests Circuits — because a
+UCO Chain IS a Link, a sub-circuit's chain embeds directly as a link in the parent (Circuit-of-Circuits,
+for free). Terminals are inferred over the FLATTENED leaf steps; conduction composes at any depth and
+short-circuits a BLOCKED junction wherever it occurs. `refactor_by_motif` lifts a recurring sub-path
+(e.g. `see→bark` shared by two routes) into ONE shared sub-circuit and rebuilds each route to REFERENCE
+it — the motifs become shared components and the hierarchy forms (the self-hosting tower). VERIFIED
+(`examples/hierarchy_demo.py`): two routes rebuilt to nest the SAME `sub:see-bark` chain object;
+composites conduct end-to-end and produce their output terminal.
+
 VERIFIED (`examples/circuit_demo.py`, `tests/test_circuit.py`): the dog's `Confirm-then-bark` lifts to
 a Chain with `IN ⟶ owl_present(forest)`, `OUT ⟵ near(dog,owl)`; conducts SUCCESS when the input holds,
 BLOCKED at the `see` junction when it doesn't; the `see→bark` motif is detected across two routes; and
