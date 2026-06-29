@@ -14,10 +14,11 @@ from .gate import gate_perception, fire_action, Verdict
 from .arbiter import Arbiter, MockArbiter, LLMArbiter
 from .engine import Engine, Report
 from . import catalysis
+from . import sop
 
 __all__ = [
     "World", "Fact", "Stats", "RngSpec", "Agent", "action", "perception", "MethodInfo",
     "propose", "Proposal", "gate_perception", "fire_action", "Verdict",
-    "Arbiter", "MockArbiter", "LLMArbiter", "Engine", "Report", "catalysis",
+    "Arbiter", "MockArbiter", "LLMArbiter", "Engine", "Report", "catalysis", "sop",
 ]
 __version__ = "0.1.0"

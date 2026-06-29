@@ -271,6 +271,25 @@ model — give the live call enough `max_tokens` to think AND emit, or the JSON 
 ASPIRATIONAL: native heaven `.claude` autoload traversal; graph (not tree) place topology; agent
 populations that `evolve` over navigation policies.
 
+## 6e. Learning — warranted routes → replayable SOPs (gated extrusion)
+
+The SOP-extrusion pattern: bracket an event flow, extrude a parameterized procedure (the start KV →
+`input_signature`, the events → `steps`). Dogworld adds the soundness the gate provides:
+
+- **gated extrusion** — a step crystallizes into a SOP **only if the gate warranted it**. The plain
+  pattern records what agents *did*; dogworld records what the world *validated*. A learned SOP is a
+  **warranted route**, not merely a frequent one (the dog's `move→see→bark` becomes a SOP; the yard
+  bark it tried is slop and is dropped). This is "routes = memory, carved on warrant."
+- **fitness-ranked** — routes carry their catalytic `fitness`; `SOPStore.search` ranks by hits then fitness.
+- **sound replay** — `replay()` re-checks every step's warrant against the current world; a stale
+  SOP (the world changed) is rejected at the first warrant that no longer holds. *You can't replay a lie.*
+
+So learning closes the loop with the rest of the engine: the gate that adjudicates a single belief
+also decides what can be *remembered as a procedure*, and the same gate re-validates it on reuse.
+VERIFIED (`examples/sop_demo.py`, `tests/test_sop.py`): 4 recorded → 3 kept (slop dropped); replay ok
+when warrants hold, stale at the exact step when the world changed. ASPIRATIONAL: auto-bracket flows
+from a live run (no manual start/end); promote a hot SOP into a skilltree node (a reusable skill).
+
 ## 7. Module plan (what gets built)
 
 | module | responsibility | status |
@@ -283,6 +302,7 @@ populations that `evolve` over navigation policies.
 | `dogworld/gate.py` | the `⊨`: warrant+consistency → act-or-penalize(B, WISDOM−1, re-narrate); records catalysis edges | BUILD |
 | `dogworld/catalysis.py` | the calculable "good": `cat(f)`, `fitness(agent)`, `max_raf` (emergence detection) | ✅ BUILT |
 | `dogworld/sdt.py` | the informative-percept channel: `Channel`(d′), `Detector`(τ), `recovered_dprime`, `optimal_threshold` — makes calibration possible | ✅ BUILT |
+| `dogworld/sop.py` | **learning**: `extrude` a flow → a SOP keeping ONLY warranted steps · `SOPStore` (search) · `replay` re-validates each step's warrant (stale routes rejected) | ✅ BUILT |
 | `dogworld/places.py` | the world chart: `PlaceWorld` over a dir-tree (places, exits, move, proximity, capability, shares) | ✅ BUILT (live-verified) |
 | `dogworld/arbiter.py` | `Arbiter` protocol; `MockArbiter` (deterministic/seeded); `LLMArbiter` (REAL — live MiniMax via `dogworld/llm.py`) | ✅ BUILT |
 | `dogworld/llm.py` | the model transport: MiniMax via anthropic SDK + `MINIMAX_API_KEY` (bare path; host-runnable) | ✅ BUILT |
