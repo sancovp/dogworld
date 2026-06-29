@@ -340,6 +340,14 @@ fall back to atomic derivation. LIVE-verified (`examples/live_macro.py`): the Mi
 invoke `Confirm-then-bark` as one macro-action** (`move→see→bark` in a single move), achieving
 `near(dog,owl)`. So the circle closes: derive once → learn → lift → **retrieve & conduct as a macro**.
 
+**Self-curation (`examples/curate_demo.py`).** The library curates itself: a successful macro
+**reinforces** its route (`run_count++`); retrieval ranks by relevance then a **promotion score**
+(`fitness`·catalysis + reuse); `decay` ages unreinforced routes; `prune` drops the dead. So the most
+catalytic-and-reused circuits rise to the top of the RAG and the rarely-conductable ones fade — a
+usage-weighted bandit over proven routes. VERIFIED: heavy reuse promoted a low-fitness route above a
+high-fitness one; decay aged it; prune removed a zero-fitness never-conducted route. The tower keeps
+what works and sheds the rest.
+
 ## 7. Module plan (what gets built)
 
 | module | responsibility | status |
@@ -354,7 +362,7 @@ invoke `Confirm-then-bark` as one macro-action** (`move→see→bark` in a singl
 | `dogworld/sdt.py` | the informative-percept channel: `Channel`(d′), `Detector`(τ), `recovered_dprime`, `optimal_threshold` — makes calibration possible | ✅ BUILT |
 | `dogworld/sop.py` | **learning**: `extrude` a flow → a SOP keeping ONLY warranted steps · `SOPStore` (search) · `replay` re-validates each step's warrant (stale routes rejected) | ✅ BUILT |
 | `dogworld/circuit.py` | **circuits**: `lift` a SOP → a UCO `Chain` of gated `Link`s (homoiconic), terminals inferred, conducts only where warranted · `detect` motifs · `give_circuit` (dogfood) | ✅ BUILT (`[circuits]` extra = UCO) |
-| `dogworld/macro.py` | **macro-actions**: `CircuitLibrary` retrieves a learned circuit by goal, checks its input terminals hold, and conducts the whole route as ONE move (else falls back) | ✅ BUILT + LIVE-verified |
+| `dogworld/macro.py` | **macro-actions + self-curation**: `CircuitLibrary` retrieves a circuit, conducts the whole route as ONE move (else falls back); reinforces on success, ranks by fitness+reuse, `decay`/`prune` curate the tower | ✅ BUILT + LIVE-verified |
 | `dogworld/places.py` | the world chart: `PlaceWorld` over a dir-tree (places, exits, move, proximity, capability, shares) | ✅ BUILT (live-verified) |
 | `dogworld/arbiter.py` | `Arbiter` protocol; `MockArbiter` (deterministic/seeded); `LLMArbiter` (REAL — live MiniMax via `dogworld/llm.py`) | ✅ BUILT |
 | `dogworld/llm.py` | the model transport: MiniMax via anthropic SDK + `MINIMAX_API_KEY` (bare path; host-runnable) | ✅ BUILT |
