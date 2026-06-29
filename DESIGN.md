@@ -322,6 +322,15 @@ the **owl carries + conducts a circuit lifted from the dog's route**. UCO is the
 extra — the core stays stdlib-only. This is the loop's apex: regularize → gate → learn → **lift to a
 gated component** → dogfood back into the agents.
 
+**Macro-actions (`macro.py`) — ✅ BUILT + LIVE.** `CircuitLibrary.run_macro(goal, world)` retrieves the
+best-matching learned circuit (RAG), checks its **input terminals hold now** (conductability), and
+**conducts the whole gated route as ONE move** — the agent reuses a learned route instead of
+re-deriving it. Two soundness checks compose: conductability (precondition warranted) + gated
+conduction (each junction re-validated, UCO short-circuits a BLOCKED link); nothing conductable →
+fall back to atomic derivation. LIVE-verified (`examples/live_macro.py`): the MiniMax dog **chose to
+invoke `Confirm-then-bark` as one macro-action** (`move→see→bark` in a single move), achieving
+`near(dog,owl)`. So the circle closes: derive once → learn → lift → **retrieve & conduct as a macro**.
+
 ## 7. Module plan (what gets built)
 
 | module | responsibility | status |
@@ -336,6 +345,7 @@ gated component** → dogfood back into the agents.
 | `dogworld/sdt.py` | the informative-percept channel: `Channel`(d′), `Detector`(τ), `recovered_dprime`, `optimal_threshold` — makes calibration possible | ✅ BUILT |
 | `dogworld/sop.py` | **learning**: `extrude` a flow → a SOP keeping ONLY warranted steps · `SOPStore` (search) · `replay` re-validates each step's warrant (stale routes rejected) | ✅ BUILT |
 | `dogworld/circuit.py` | **circuits**: `lift` a SOP → a UCO `Chain` of gated `Link`s (homoiconic), terminals inferred, conducts only where warranted · `detect` motifs · `give_circuit` (dogfood) | ✅ BUILT (`[circuits]` extra = UCO) |
+| `dogworld/macro.py` | **macro-actions**: `CircuitLibrary` retrieves a learned circuit by goal, checks its input terminals hold, and conducts the whole route as ONE move (else falls back) | ✅ BUILT + LIVE-verified |
 | `dogworld/places.py` | the world chart: `PlaceWorld` over a dir-tree (places, exits, move, proximity, capability, shares) | ✅ BUILT (live-verified) |
 | `dogworld/arbiter.py` | `Arbiter` protocol; `MockArbiter` (deterministic/seeded); `LLMArbiter` (REAL — live MiniMax via `dogworld/llm.py`) | ✅ BUILT |
 | `dogworld/llm.py` | the model transport: MiniMax via anthropic SDK + `MINIMAX_API_KEY` (bare path; host-runnable) | ✅ BUILT |
