@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dogworld"
+version = "0.1.0"
+description = "An abductive, soft-RNG, belief-gated agent-world engine (WISDOM = the calibration gate)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []                       # stdlib only — the core has zero deps
+license = { text = "MIT" }
+
+[project.optional-dependencies]
+# seams reuse companion packages IF present; never required for the core
+seams = ["cave-teams"]
+
+[tool.setuptools.packages.find]
+include = ["dogworld*"]

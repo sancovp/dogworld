@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      # The core is stdlib-only — no install step, no deps. The suite must pass offline.
+      - name: Run the test suite (offline, no API, no neo4j)
+        run: python tests/run_all.py
+      - name: Smoke-run the offline examples
+        run: |
+          python examples/owl_dog.py
+          python examples/calibration_bench.py
+          python examples/catalysis_demo.py
+          python examples/sdt_evolve.py
