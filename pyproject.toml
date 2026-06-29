@@ -14,6 +14,8 @@ license = { text = "MIT" }
 [project.optional-dependencies]
 # seams reuse companion packages IF present; never required for the core
 seams = ["cave-teams"]
+# circuits: lift learned routes into composable UCO Chains (homoiconic, gated conduction)
+circuits = ["universal-chain-ontology"]
 
 [tool.setuptools.packages.find]
 include = ["dogworld*"]

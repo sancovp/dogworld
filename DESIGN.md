@@ -299,6 +299,29 @@ watchdog confirmed-then-barked, the route **auto-learned** into the SOP `Confirm
 **promoted to a skilltree node**. So: act → warranted success → auto-extrude → promote → RAG-retrievable.
 ASPIRATIONAL: `run_count`/fitness-driven promotion thresholds; replay a retrieved SOP as a macro-action.
 
+## 6f. Circuits — warranted routes lifted into composable UCO components (✅ BUILT)
+
+A SOP is a *recorded route*; a **Circuit** is that route **lifted into a reusable component** on
+**universal-chain-ontology (UCO)** — the published Link/Chain homoiconic primitives:
+
+- a **GatedStep is a UCO `Link`** that conducts (SUCCESS) only where its junction is warranted, else
+  BLOCKED; a **Circuit is a UCO `Chain`** of them. Because a Chain *is* a Link, a **Circuit-of-Circuits
+  is a Circuit** — composition closes for free. UCO's Chain short-circuits on a BLOCKED link, so a
+  Circuit **stops at the first unwarranted junction** = *sound conduction, you can't conduct a lie.*
+- **terminals are inferred** (graph-theoretic): `input` = warrants consumed-not-produced (external
+  preconditions); `output` = facts produced-not-consumed (deliverables); internal couplings are hidden.
+- **`detect`** finds recurring warranted sub-paths (motifs) across SOPs → shared sub-circuits.
+- **`give_circuit` (dogfood)** attaches a lifted circuit to an agent as a capability — the agent now
+  runs on circuits the engine lifted from its own (and others') behavior. *Self-hosting: the operator
+  runs what the system designed.*
+
+VERIFIED (`examples/circuit_demo.py`, `tests/test_circuit.py`): the dog's `Confirm-then-bark` lifts to
+a Chain with `IN ⟶ owl_present(forest)`, `OUT ⟵ near(dog,owl)`; conducts SUCCESS when the input holds,
+BLOCKED at the `see` junction when it doesn't; the `see→bark` motif is detected across two routes; and
+the **owl carries + conducts a circuit lifted from the dog's route**. UCO is the optional `[circuits]`
+extra — the core stays stdlib-only. This is the loop's apex: regularize → gate → learn → **lift to a
+gated component** → dogfood back into the agents.
+
 ## 7. Module plan (what gets built)
 
 | module | responsibility | status |
@@ -312,6 +335,7 @@ ASPIRATIONAL: `run_count`/fitness-driven promotion thresholds; replay a retrieve
 | `dogworld/catalysis.py` | the calculable "good": `cat(f)`, `fitness(agent)`, `max_raf` (emergence detection) | ✅ BUILT |
 | `dogworld/sdt.py` | the informative-percept channel: `Channel`(d′), `Detector`(τ), `recovered_dprime`, `optimal_threshold` — makes calibration possible | ✅ BUILT |
 | `dogworld/sop.py` | **learning**: `extrude` a flow → a SOP keeping ONLY warranted steps · `SOPStore` (search) · `replay` re-validates each step's warrant (stale routes rejected) | ✅ BUILT |
+| `dogworld/circuit.py` | **circuits**: `lift` a SOP → a UCO `Chain` of gated `Link`s (homoiconic), terminals inferred, conducts only where warranted · `detect` motifs · `give_circuit` (dogfood) | ✅ BUILT (`[circuits]` extra = UCO) |
 | `dogworld/places.py` | the world chart: `PlaceWorld` over a dir-tree (places, exits, move, proximity, capability, shares) | ✅ BUILT (live-verified) |
 | `dogworld/arbiter.py` | `Arbiter` protocol; `MockArbiter` (deterministic/seeded); `LLMArbiter` (REAL — live MiniMax via `dogworld/llm.py`) | ✅ BUILT |
 | `dogworld/llm.py` | the model transport: MiniMax via anthropic SDK + `MINIMAX_API_KEY` (bare path; host-runnable) | ✅ BUILT |

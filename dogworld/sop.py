@@ -31,6 +31,7 @@ class FlowStep:
     agent: str
     action: str
     warrant: str = ""       # the fact the world had to hold (the gate's check); "" = ungated action
+    produces: str = ""       # the fact this step closes (its output); "" = produces nothing
     place: str = ""
     passed: bool = True      # did the gate warrant it? UNwarranted steps never enter a SOP.
 
@@ -41,6 +42,7 @@ class Step:
     agent: str
     action: str
     warrant: str = ""
+    produces: str = ""       # for terminal inference: output = produced facts nothing downstream consumes
     place: str = ""
 
 
@@ -71,7 +73,7 @@ def extrude(name: str, domain: str, flow: list[FlowStep], *, subdomain: str = ""
             fitness: int = 0, created_at: str = "") -> SOP:
     """Crystallize a flow into a SOP — keeping ONLY the warranted steps (the gated extrusion)."""
     warranted = [s for s in flow if s.passed]
-    steps = [Step(i + 1, s.agent, s.action, s.warrant, s.place) for i, s in enumerate(warranted)]
+    steps = [Step(i + 1, s.agent, s.action, s.warrant, s.produces, s.place) for i, s in enumerate(warranted)]
     return SOP(slug=_slug(name), name=name, domain=domain, subdomain=subdomain,
                input_signature=input_signature or {}, steps=steps, tags=list(tags),
                fitness=fitness, created_at=created_at)
