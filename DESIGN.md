@@ -258,9 +258,18 @@ world/                         dog (live MiniMax) reads its chart each tick → 
 **Verified LIVE** (`examples/live_places.py`, real MiniMax): the dog reasoned *"No owl here,
 barking would cost wisdom. Forest is where owls roost,"* **moved itself to the forest**, then
 barked validly — WISDOM held at 10, `near(dog,owl)` closed. The offline core is unchanged (the
-place-world is the LLM-agent overlay; `MockArbiter` tests stay stdlib). ASPIRATIONAL: native
-heaven `.claude` autoload traversal; graph (not tree) place topology; a live *multi-agent*
-skill-share run (owl lends `see`, dog confirms visually before barking).
+place-world is the LLM-agent overlay; `MockArbiter` tests stay stdlib).
+
+**Proximity skill-sharing — also VERIFIED LIVE** (`examples/live_skillshare.py`): the owl lends
+`see` to whoever is in the forest; the dog can't bark validly without first *confirming* an owl,
+and it can only confirm by **borrowing the owl's sight**. The live MiniMax dog discovered the
+three-step plan on its own — *move to forest → use the owl's lent `see` to confirm → then bark*
+(WISDOM held at 10, `confirmed_owl(forest)` + `near(dog,owl)` closed). The borrowed skill is
+load-bearing: without proximity to the owl, the dog cannot act validly. (Note: M2.7 is a thinking
+model — give the live call enough `max_tokens` to think AND emit, or the JSON never lands.)
+
+ASPIRATIONAL: native heaven `.claude` autoload traversal; graph (not tree) place topology; agent
+populations that `evolve` over navigation policies.
 
 ## 7. Module plan (what gets built)
 

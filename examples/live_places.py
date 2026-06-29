@@ -42,7 +42,7 @@ def decide(chart: str, feedback: list[str]) -> dict:
         '  {"why": "<one short reason>", "do": "sniff"}\n'
         '  {"why": "<one short reason>", "move": "<an exit name>"}'
     )
-    raw = llm.complete(PERSONA, user, max_tokens=200)
+    raw = llm.complete(PERSONA, user, max_tokens=1200)  # M2.7 is a thinking model — leave room to think AND emit
     m = re.search(r"\{.*\}", raw, re.DOTALL)
     try:
         return json.loads(m.group(0)) if m else {"do": "sniff", "why": "(unparseable)"}
