@@ -348,6 +348,33 @@ usage-weighted bandit over proven routes. VERIFIED: heavy reuse promoted a low-f
 high-fitness one; decay aged it; prune removed a zero-fitness never-conducted route. The tower keeps
 what works and sheds the rest.
 
+## 6g. The five circuit roles — dogworld as a Generator (the meta-architecture)
+
+The circuit primitives form five roles. Four are deterministic ops; two need generation (author,
+repairer) — so the meta-team is **2 LLM policies over 3 gated tools**, not five chat agents:
+
+| role | dogworld | kind |
+|---|---|---|
+| **miner** | `FlowRecorder` + `detect` (auto-bracket → extrude warranted routes) | tool |
+| **conductor** | `Circuit.conduct` / `macro.run_macro` | tool |
+| **composer** | `compose` / `refactor_by_motif` | tool (judgment) |
+| **author** | the `LLMArbiter` deriving a NEW route when none fits | LLM policy |
+| **repairer** | `repair` — splice a conductable producer of a broken warrant; admit iff it re-conducts | LLM policy / tool |
+
+**The keystone discipline:** the meta-team is itself **gated** — a mined/composed/repaired/authored
+circuit may enter the library only if it **conducts (warranted)**. Soundness lifts to the meta-level;
+ungated this would be confabulatory runaway, gated it is super-compilation (the operator runs on a
+self-curating tower the system designed). A dogworld Circuit IS a UCO `Chain` IS a cave-teams `Link`,
+so a gated **cave-team** over the shared `CircuitLibrary` is type-compatible by construction.
+
+**The system frame (DUO/OVP triad):** dogworld = the **Generator**; the meta-team = the automated
+**Challenger/researcher** running experiments over it; an **Observer** watches the researcher; a
+harvesting loop turns the observed run into papers (web-search for support). The Generator (this repo)
+is built; the researcher+observer get a hookup to an external simulation-research system; the
+paper-writer/harvester is solved elsewhere (SSRI) — **not built here.** The Generator's job is to emit
+clean, gated, observable structure (every gate verdict, WISDOM/catalysis, circuit lift/conduct/repair)
+so the experiments are measurable and the paper-pieces write themselves.
+
 ## 7. Module plan (what gets built)
 
 | module | responsibility | status |
@@ -363,6 +390,7 @@ what works and sheds the rest.
 | `dogworld/sop.py` | **learning**: `extrude` a flow → a SOP keeping ONLY warranted steps · `SOPStore` (search) · `replay` re-validates each step's warrant (stale routes rejected) | ✅ BUILT |
 | `dogworld/circuit.py` | **circuits**: `lift` a SOP → a UCO `Chain` of gated `Link`s (homoiconic), terminals inferred, conducts only where warranted · `detect` motifs · `give_circuit` (dogfood) | ✅ BUILT (`[circuits]` extra = UCO) |
 | `dogworld/macro.py` | **macro-actions + self-curation**: `CircuitLibrary` retrieves a circuit, conducts the whole route as ONE move (else falls back); reinforces on success, ranks by fitness+reuse, `decay`/`prune` curate the tower | ✅ BUILT + LIVE-verified |
+| `dogworld/repair.py` | **circuit repairer** (the 5th role): a stale circuit (BLOCKED at a junction) is fixed by splicing a conductable PRODUCER of the missing warrant; admitted only if it re-conducts (gated repair); else escalate to the author | ✅ BUILT |
 | `dogworld/places.py` | the world chart: `PlaceWorld` over a dir-tree (places, exits, move, proximity, capability, shares) | ✅ BUILT (live-verified) |
 | `dogworld/arbiter.py` | `Arbiter` protocol; `MockArbiter` (deterministic/seeded); `LLMArbiter` (REAL — live MiniMax via `dogworld/llm.py`) | ✅ BUILT |
 | `dogworld/llm.py` | the model transport: MiniMax via anthropic SDK + `MINIMAX_API_KEY` (bare path; host-runnable) | ✅ BUILT |

@@ -116,6 +116,18 @@ class World:
         """Does the world KNOW this fact (Mode-B 'when you looked')? Exact membership."""
         return fact in self.facts
 
+    def copy(self) -> "World":
+        """A deep-enough copy (facts + catalysis bookkeeping) — for non-mutating diagnosis/repair."""
+        w = World()
+        w.facts = set(self.facts)
+        w.events = list(self.events)
+        w._functional = dict(self._functional)
+        w.enables = {k: set(v) for k, v in self.enables.items()}
+        w.enabler_of = {k: set(v) for k, v in self.enabler_of.items()}
+        w.food = set(self.food)
+        w.closed_by = dict(self.closed_by)
+        return w
+
     def log(self, msg: str) -> None:
         self.events.append(msg)
 
