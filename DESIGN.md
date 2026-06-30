@@ -51,6 +51,13 @@ hand-decorated), and each verb carries the dogworld gate metadata — so every t
 adjudicated by the warrant/WISDOM/catalysis machinery. *This is the point of the engine: the gate
 runs on top of the template system, not beside it.* Requires the `[template]` extra (pydantic, jinja2).
 
+**Agents ARE heaven agents** (`dogworld/heaven_agent.py`, `[heaven]` extra). A dogworld gated verb is
+exposed as a `BaseHeavenTool`; the agent is a real `HeavenAgentConfig` (provider=ANTHROPIC,
+model="MiniMax-…" → the minimax path) run via `BaseHeavenAgent.run` — Isaac's agent framework, not a
+bare SDK call. When the heaven MiniMax agent calls a tool, the tool runs the dogworld gate and returns
+the verdict (WOOF / "WISDOM −1: …"). LIVE-verified (`examples/live_heaven_agent.py`): the heaven dog
+barked when warranted (WOOF, `near` closed) and abstained when no owl — WISDOM held.
+
 ## 1. The causation swap (the core mechanism)
 
 Real life runs cause→effect. Dogworld runs the arrow **backward** (abduction = inference to
