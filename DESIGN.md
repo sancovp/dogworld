@@ -35,6 +35,22 @@ Two registers of the same fact, both implemented here:
 
 ---
 
+## 0.5 The FOUNDATION — owl22python + the template system (`dogworld/template/`)
+
+The engine is built on (and exists to exercise) a template system, vendored in `dogworld/template/`:
+- **`pydantic_stack.RenderablePiece` / `MetaStack`** — stackable, renderable pydantic models.
+- **`template_mixins.TemplateAttributeMixin` / `TemplateMethodMixin`** — `add_attribute` / `add_method`
+  / `execute_template_sequence`: class-level templating that builds an object's attrs/methods FROM DATA.
+- **`templated_class.TemplatedClass`** — a `BaseModel`+mixins class configurable from a dict.
+- **`owl22python.owl22python`** — compiles OWL2/XML → a generated `RenderablePiece` class (one typed
+  field per OWL DataProperty), instantiate, render back to an ontology-typed RDF result.
+
+Agents are built ON this (`dogworld/template_agent.TemplateAgent`): an agent's **STATE is compiled
+from an OWL ontology by owl22python**, its **VERBS are added by `add_method`** (generated, not
+hand-decorated), and each verb carries the dogworld gate metadata — so every template-defined verb is
+adjudicated by the warrant/WISDOM/catalysis machinery. *This is the point of the engine: the gate
+runs on top of the template system, not beside it.* Requires the `[template]` extra (pydantic, jinja2).
+
 ## 1. The causation swap (the core mechanism)
 
 Real life runs cause→effect. Dogworld runs the arrow **backward** (abduction = inference to

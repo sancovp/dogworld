@@ -16,6 +16,8 @@ license = { text = "MIT" }
 seams = ["cave-teams"]
 # circuits: lift learned routes into composable UCO Chains (homoiconic, gated conduction)
 circuits = ["universal-chain-ontology"]
+# template: THE FOUNDATION — owl22python (OWL→agent) + the template mixins (vendored in dogworld/template/)
+template = ["pydantic>=2", "jinja2>=3"]
 
 [tool.setuptools.packages.find]
 include = ["dogworld*"]

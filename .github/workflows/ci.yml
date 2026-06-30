@@ -18,7 +18,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      # The core is stdlib-only — no install step, no deps. The suite must pass offline.
+      # Install the FOUNDATION (template = owl22python + the mixins; circuits = UCO) so the suite
+      # exercises them. The stdlib core still works without these; the gated tests self-skip if absent.
+      - name: Install the template + circuits extras
+        run: pip install -e '.[template,circuits]'
       - name: Run the test suite (offline, no API, no neo4j)
         run: python tests/run_all.py
       - name: Smoke-run the offline examples
@@ -27,3 +30,9 @@ jobs:
           python examples/calibration_bench.py
           python examples/catalysis_demo.py
           python examples/sdt_evolve.py
+          python examples/template_agent_demo.py
+          python examples/circuit_demo.py
+          python examples/macro_demo.py
+          python examples/hierarchy_demo.py
+          python examples/curate_demo.py
+          python examples/repair_demo.py
